@@ -15,7 +15,7 @@ class api_handler:
         self.url = "https://api.edamam.com/search?"
 
         
-    def search(self, description: str) -> dict:
+    def search(self, description: str) -> [dict]:
         ''' This function turns the user's recipe input
             and returns results from the Edamam API in form of a dict(JSON) '''
 
@@ -24,7 +24,21 @@ class api_handler:
         print(url)
         response = urllib.request.urlopen(url)
         query_results = json.load(response)
-        print(query_results)
+        results = query_results['hits']
+        recipes = []
+        for i in range(len(results)):
+            recipe = {}
+            recipe['label'] = results[i]['recipe']['label'] # A str
+            recipe['image'] = results[i]['recipe']['image'] # A str
+            recipe['source'] = results[i]['recipe']['source'] # A str
+            recipe['url'] = results[i]['recipe']['url'] # A str
+            recipe['ingredients'] = results[i]['recipe']['ingredientLines'] # A list of str
+            recipe['calories'] = results[i]['recipe']['calories'] # A float
+            recipe['totalTime'] = results[i]['recipe']['totalTime'] # A float
+
+            recipes.append(recipe)
+        
+        return recipes
 
     def _prepare_search(self, description: str) -> [(str, str)]:
         ''' Seperates user description and assign them to a meaningful
@@ -63,7 +77,6 @@ class api_handler:
         search.append(('app_key', f'{self.api_key}'))
         search.extend(search_parameters)
 
-        print(search)
         return search
 
     def _if_cuisineType(self, search_parameters: [(str,str)], search_word: str) -> bool:
@@ -88,11 +101,11 @@ class api_handler:
                 'condiments and sauces', 'drinks', 'desserts', 'egg', 'main course', 
                 'omelet', 'pancake', 'preps', 'preserve', 'salad', 'sandwiches', 'soup', 'starter'}
 
-        if search_word == 'alcohol' or search_word == 'cocktail': # This case is needed due to either words being viable for the same results
+        if search_word in ('alcohol', 'cocktail'): # This case is needed due to either words being viable for the same results
             param = ('dishtype', 'alcohol-cocktail')
             search_parameters.append(param)
             return True
-        elif search_word == 'biscuits' or search_word == 'cookies': # This case is needed due to either words being viable for the same results
+        elif search_word in ('biscuits', 'cookies'): # This case is needed due to either words being viable for the same results
             param = ('dishtype', 'biscuits and cookies')
             search_parameters.append(param)
             return True
@@ -117,7 +130,7 @@ class api_handler:
     def _if_dietLabel(self, search_parameters: [(str,str)], search_word: str) -> bool:
         ''' Checks if user search word has a dietLabel search paramater'''
         
-        diets = {'balanced', 'high-fiber', 'high-protein', 'low-carb', 'low-fat', 'low-sodium'}
+        diets = {'balanced', 'high-protein', 'low-carb', 'low-fat'}
 
         if search_word in diets:
             param = ('diet', search_word)
@@ -129,12 +142,8 @@ class api_handler:
     def _if_healthLabel(self, search_parameters: [(str,str)], search_word: str) -> bool:
         ''' Checks if user search word has a healthLabel search paramater'''
         
-        health_labels = {'alcohol-free', 'immuno-supportive', 'celery-free', 'crustacean-free', 
-                        'dairy-free', 'egg-free', 'fish-free', 'fodmap-free', 'gluten-free', 'keto-friendly', 
-                        'kidney-friendly', 'kosher', 'low-potassium', 'lupine-free', 'mustard-free', 
-                        'low-fat-abs', 'No-oil-added', 'low-sugar', 'paleo', 'peanut-free', 'pescatarian', 
-                        'pork-free', 'red-meat-free', 'sesame-free', 'shellfish-free', 'soy-free', 'sugar-conscious', 
-                        'tree-nut-free', 'vegan', 'vegetarian', 'wheat-free'}
+        health_labels = {'alcohol-free', 'peanut-free', 'sugar-conscious', 
+                        'tree-nut-free', 'vegan', 'vegetarian'}
 
         if search_word in health_labels:
             param = ('health', search_word)
@@ -145,6 +154,6 @@ class api_handler:
     
 if __name__ == '__main__':
     a = api_handler()
-    b = a.search("chicken indian")
+    b = a.search("chicken breakfast soup alcohol-free")
     
     
