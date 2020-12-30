@@ -1,7 +1,13 @@
 {% extends "layout.html" %}
 {% block content %}
-    <!-- <div class="col-6 mx-auto">
-        <h1 class="child">HELLO WORLD</h1>
+    <div>
+        <form method="POST" action="">
+            {{ form.hidden_tag() }}
+            <div>
+                {{ form.search_input.label() }}
+                {{ form.search_input() }}
+                {{ form.submit() }}
+            </div>
+        </form>
     </div>
-     -->
 {% endblock content %}

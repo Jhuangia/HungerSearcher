@@ -21,10 +21,10 @@ class api_handler:
 
         search_params = self._prepare_search(description)
         url = "".join([self.url,urllib.parse.urlencode(search_params)])
-        print(url)
         response = urllib.request.urlopen(url)
         query_results = json.load(response)
         results = query_results['hits']
+
         recipes = []
         for i in range(len(results)):
             recipe = {}
@@ -155,5 +155,6 @@ class api_handler:
 if __name__ == '__main__':
     a = api_handler()
     b = a.search("chicken breakfast soup alcohol-free")
+    print(b)
     
     
