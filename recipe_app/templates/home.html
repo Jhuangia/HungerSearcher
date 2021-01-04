@@ -1,13 +1,16 @@
 {% extends "layout.html" %}
 {% block content %}
-    <div>
-        <form method="POST" action="">
-            {{ form.hidden_tag() }}
-            <div>
-                {{ form.search_input.label() }}
-                {{ form.search_input() }}
-                {{ form.submit() }}
-            </div>
-        </form>
-    </div>
+    <!-- <div class="container col-md-12 my-auto"> -->
+    <!-- <div class="container text-center">
+        <p>This is some text within a card body</p>
+    </div> -->
+    <form method="POST" action="">
+        {{ form.hidden_tag() }}
+        <div class="text-center">
+            <p class="text-center h1">HUNGER SEARCHER</p>
+            <p class="text-center">A recipe search for hungry people</p>
+            {{ form.search_input(class_=" form-control-lg searchbar col-sm-12 mx-auto") }}
+            {{ form.submit(class_="btn btn-primary btn-md") }}
+        </div>
+    </form>
 {% endblock content %}

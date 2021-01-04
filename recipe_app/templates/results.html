@@ -1,4 +1,44 @@
 {% extends "layout.html" %}
 {% block content %}
-    <p> {{ search_results }} </p>
+    {% if search_results == [] %}
+        <div class="container">
+            <p class="h1">NO SEARCH RESULTS</p>
+            <a href="{{ url_for('home') }}">
+                <button class="text-center btn-dark">
+                    return to search page
+                </button>
+            </a>
+        </div>
+
+    {% else %}
+        <div class= "container">
+            <div class = "row mx-auto">
+                {% for result in search_results %}
+                <div class="card col-lg-3 my-2 mx-2 bg-light" style="width: 15rem;">
+                    <img class="card-img-top my-2" src={{ result.image }} alt="Card image cap">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ result.label }}</h5>
+                        <a href= {{ result.url }} class="btn btn-primary btn-dark">Check it out!</a>
+                    </div>
+                    </div>
+                {% endfor %}
+            </div>
+            <a href="{{ url_for('home') }}">
+                <button class="btn-dark btn-lg">
+                    return to search page
+                </button>
+            </a>
+        </div>
+    {% endif %}
+    <style>
+        body {
+            backdrop-filter: blur(3px);
+            overflow-y: scroll;
+        }
+        .card-img-top {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+        }
+    </style>
 {% endblock content %}
